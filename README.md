@@ -1,6 +1,6 @@
 # **Comprehensive multi-tissue epigenome atlas in *Ovis aries*:** **A resource for sheep** **complex traits, domestication and breeding**
 
-Deyin Zhang1#, Jiangbo Cheng1#, Xiaolong Li1#, Kai Huang1, Lvfeng Yuan9, Yuan Zhao1, Dan Xu2, Yukun Zhang1, Liming Zhao1, Xiaobin Yang2, Zongwu Ma2, Quanzhong Xu1, Chong Li2, Xiaojuan Wang2, Chen Zheng2, Defu Tang2, Fang Nian8, Xiangpeng Yue1, Wanhong Li1, Huibin Tian1, Xiuxiu Weng1, Peng Hu7, Yuanqing Feng6, [Peter Kalds](https://pubmed.ncbi.nlm.nih.gov/?term=Kalds+P&cauthor_id=36862946)5, Zhihua Jiang4, Yunxia Zhao3, Xiaoxue Zhang2, Fadi Li1 and Weimin Wang1*
+Deyin Zhang<sup>1#</sup>, Jiangbo Cheng<sup>1#</sup>, Xiaolong Li<sup>1#</sup>, Kai Huang<sup>1</sup>, Lvfeng Yuan<sup>9</sup>, Yuan Zhao<sup>1</sup>, Dan Xu<sup>2</sup>, Yukun Zhang<sup>1</sup>, Liming Zhao<sup>1</sup>, Xiaobin Yang<sup>2</sup>, Zongwu Ma<sup>2</sup>, Quanzhong Xu<sup>1</sup>, Chong Li<sup>2</sup>, Xiaojuan Wang<sup>2</sup>, Chen Zheng<sup>2</sup>, Defu Tang<sup>2</sup>, Fang Nian<sup>8</sup>, Xiangpeng Yue<sup>1</sup>, Wanhong Li<sup>1</sup>, Huibin Tian<sup>1</sup>, Xiuxiu Weng<sup>1</sup>, Peng Hu<sup>7</sup>, Yuanqing Feng<sup>6</sup>, Peter Kalds<sup>5</sup>, Zhihua Jiang<sup>4</sup>, Yunxia Zhao<sup>3</sup>, Xiaoxue Zhang<sup>2</sup>, Fadi Li<sup>1</sup> and Weimin Wang<sup>1*</sup>
 
 # Summary
 
@@ -8,7 +8,7 @@ Comprehensive functional genome annotation is crucial to elucidate the molecular
 
 # Main work
 
-<img src="test_up.assets/work.png" alt="work" style="zoom: 33%;" />
+<img src="test_up.assets/work.png" alt="work" width="80%" />
 
 # Code
 
