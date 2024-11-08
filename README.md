@@ -12,7 +12,7 @@ Comprehensive functional genome annotation is crucial to elucidate the molecular
 
 # Code
 
-- Codes for plotting figures can be found [here](https://github.com/wulabupenn/Figures_Joint-snhmC-seq_2023).
+- Codes for plotting figures can be found [here](https://github.com/Xiaolong0803/iMeta-code-2024?tab=readme-ov-file).
 
 # Reference
 
