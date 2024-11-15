@@ -1,0 +1,53 @@
+---
+title: "Figure 7"
+output:
+  html_document: default
+  pdf_document: default
+author: "Xiaolong Li"
+date: "2024-11-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Figure 7A
+```{r,fig.width=10, fig.height=5}
+library(tidyverse)
+library(data.table)
+mydata_51760995 <- fread("mydata_51760995.txt")
+mydata_51760995$genotype <- factor(mydata_51760995$genotype,levels=c("A","C"))
+mydata_51760995$variable <- factor(mydata_51760995$variable,levels=
+                         c('AL','Kazakh','Ht','LH','LL',
+                           "Cele","STH","Hu","ST","TY","UJ","BAR","BAY","MG",
+                           "Karakul","OL","Va","PT",
+                           "AW","TE","BL","DP","EF","SA","ML","PD","WS","Bs"))
+pinlv_51760995 <- ggplot(mydata_51760995,aes(variable, value),position="stack") +
+  geom_bar(aes(fill = genotype), stat = "identity",color="black",linewidth=0,
+           position = "fill", width = 0.8,data=mydata_51760995)+
+ scale_fill_manual(values = c("A" = "blue", "C" = "red"))+
+  theme_bw(base_size = 20)+
+  theme(panel.grid = element_blank(),
+       axis.text.x = element_text(angle = 45, hjust = 1))
+pinlv_51760995
+```
+
+## Figure 7B
+```{r,fig.width=10, fig.height=5}
+mydata_51825895 <- fread("mydata_51825895.txt")
+mydata_51825895$genotype <- factor(mydata_51825895$genotype,levels=c("G","A"))
+mydata_51825895$variable <- factor(mydata_51825895$variable,levels=
+                         c('AL','Kazakh','Ht','LH','LL',
+                           "Cele","STH","Hu","ST","TY","UJ","BAR","BAY","MG",
+                           "Karakul","OL","Va","PT",
+                           "AW","TE","BL","DP","EF","SA","ML","PD","WS","Bs"))
+pinlv_51825895 <- ggplot(mydata_51825895,aes(variable, value),position="stack") +
+  geom_bar(aes(fill = genotype), stat = "identity",color="black",linewidth=0,
+           position = "fill", width = 0.8,data=mydata_51825895)+
+ scale_fill_manual(values = c("G" = "blue", "A" = "red"))+
+  theme_bw(base_size = 20)+
+  theme(panel.grid = element_blank(),
+       axis.text.x = element_text(angle = 45, hjust = 1))
+pinlv_51825895
+```
+

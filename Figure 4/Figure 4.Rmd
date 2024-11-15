@@ -1,0 +1,241 @@
+---
+title: "Figure 4"
+author: "Jiangbo Cheng"
+date: "2024-11-14"
+output: html_document
+---
+## Figure 4D
+
+```{r}
+library(tidyverse)
+
+fst <- function(a,b) {
+  fstname <- paste0(a,"_fst.xls")
+  qpname <- paste0(a,"_θπ.xls")
+  xpehhname <- paste0(a,"_xpehh.xls")
+  
+  fst <- read.delim(fstname,header = F)
+  colnames(fst) <- c("section","fst","Chr","BIN_START","BIN_END","N_VARIANTS_fst")
+  
+  qp <- read.delim(qpname,header = F)
+  colnames(qp) <- c("section","qp","Chr","BIN_START","BIN_END","N_VARIANTS1_qp","PI1","N_VARIANTS2_qp","PI2")
+  
+  xpehh <- read.delim(xpehhname,header = F)
+  colnames(xpehh) <- c("section","xpehh","Chr","BIN_START","BIN_END","N_VARIANTS_xpehh")
+  
+  
+  qptop <- quantile(qp$qp, 0.95)
+  fsttop <- quantile(fst$fst, 0.95)
+  xpehhtop <- quantile(xpehh$xpehh, 0.95)
+  
+  
+  df <- left_join(xpehh,qp,by = "section")
+  df <- left_join(df,fst,by = "section")
+  
+  df1 <- df %>% filter(complete.cases(.))
+  
+  df1 <- df1[!(df1$fst >= fsttop & df1$qp >= qptop &df1$xpehh < xpehhtop ),]
+  
+  ggplot(data = df1) + 
+    geom_point(mapping = aes(x = fst, y = qp,color = xpehh))+
+    geom_hline(yintercept = qptop, linetype = "dashed", color = "black")+
+    geom_vline(xintercept = fsttop, linetype = "dashed", color = "black")+
+    scale_color_gradientn(colors = c("#7D58A1", "#F4A5AD", "#E6281E"))+
+    labs( 
+      x = "FST",  
+      y = "QP Ratio",  
+      color = "XPEHH",
+      title = "re.wild") +
+    theme_bw()+
+    theme(  
+      axis.title.x = element_text(size = 16),  # 调整 x 轴标题字体大小  
+      axis.title.y = element_text(size = 16),  # 调整 y 轴标题字体大小  
+      legend.title = element_text(size = 16),  # 调整图例标题字体大小  
+      legend.text = element_text(size = 16),   
+      axis.text.x = element_text(size = 16),
+      axis.text.y = element_text(size = 16),
+      plot.title = element_text(size = 16)    
+    )
+
+}
+
+fst("wild.domestic","wild.domestic")
+
+
+
+```
+
+## Figure 4E
+```{r}
+library(ggplot2)
+library(patchwork)
+library(scales)
+library(reshape2)
+
+#Figure4E
+rich <- read.table('domestication_enrichment_all_state.xls',header = T,sep='\t')
+
+
+
+
+rich$state <- factor(rich$state, levels = unique(rich$state))
+rich$erichment <- round(rich$erichment,2)
+richs <- ggplot(rich, aes(state,erichment))
+
+color_lines <- readLines("color.txt")
+color_values <- unlist(strsplit(color_lines, "\n"))
+
+
+richs+geom_bar(stat = 'identity',aes(fill=state), width = 0.7)+
+  theme(legend.position = "none")+
+  ylab("Enrichment")+ xlab("")+
+  scale_fill_manual(values = color_values)+
+  theme(panel.background = element_rect(fill = "white"),
+        axis.text.y = element_text(face = "bold", size = 12),
+        axis.text.x = element_text(face = "bold", size = 12),
+        axis.line = element_line(color = "black", size = 1),
+        axis.title.y = element_text(size = 12,      
+                                    face = "bold",
+                                    hjust = 0.5))+
+  geom_text(aes(label = erichment), vjust = -0.5,fontface = "bold")+
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", size = 1.5)+ 
+  coord_cartesian(ylim = c(0, 3))+
+  scale_y_continuous(expand = c(0, 0))
+```
+
+
+## Figure 4F
+```{r}
+tsr <- read.delim('domestication_enrichment_all_tissues.xls',header = T,sep='\t')
+
+
+tsr$E1 <- round(tsr$TssA, 2)
+tsr$E3 <- round(tsr$EnhA, 2)
+
+
+tsr$tissue <- factor(tsr$tissue, levels = rev(unique(tsr$tissue)))
+
+
+pro <- ggplot(tsr, aes(tissue,E1))
+enh <- ggplot(tsr, aes(tissue,E3))
+
+
+color_lines <- scan("color2.txt",what="chracter")
+
+a <- pro+geom_bar(stat = 'identity',aes(fill= tissue), width = 0.7)+
+  theme(legend.position = "none")+
+  ylab("TssA Enrichment")+ xlab("")+
+  scale_fill_manual(values = color_lines)+
+  theme(panel.background = element_rect(fill = "white"),
+        axis.text.y = element_text(face = "bold", size = 12),
+        axis.text.x = element_text(face = "bold", size = 12),
+        axis.line = element_line(color = "black", size = 1),
+        axis.title.x = element_text(size = 12,      
+                                    face = "bold",
+                                    hjust = 0.5))+
+  scale_y_continuous(expand = c(0, 0))+
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", size = 1.5)+
+  coord_cartesian(ylim = c(0, 3))+ coord_flip()
+
+
+
+b <- enh+geom_bar(stat = 'identity',aes(fill= tissue), width = 0.7)+
+  theme(legend.position = "none")+
+  ylab("EnhA Enrichment")+ xlab("")+
+  scale_fill_manual(values = color_lines)+
+  theme(panel.background = element_rect(fill = "white"),
+        axis.text.y = element_text(face = "bold", size = 12),
+        axis.text.x = element_text(face = "bold", size = 12),
+        axis.line = element_line(color = "black", size = 1),
+        axis.title.x = element_text(size = 12,     
+                                    face = "bold",
+                                    hjust = 0.5))+
+  scale_y_continuous(expand = c(0, 0))+
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", size = 1.5)+
+  coord_cartesian(xlim = c(0, 3))+
+  coord_flip()
+
+a/b
+```
+
+
+## Figure 4G
+```{r}
+df <- read.delim("domestication_enrichment_TssA.xls")
+
+colnames(df)[2:4] <- c("native.import","wild.native","wild.import")
+
+df2 <- melt(df)
+df2$tissue <- factor(df2$tissue, levels = unique(df2$tissue))
+
+df2$value <- round(df2$value,2)
+color_lines <- scan("color2.txt",what="chracter")
+
+ggplot(df2,aes(tissue,value))+
+  geom_bar(stat = 'identity',aes(fill= variable), width = 0.7, position = "dodge")+
+  scale_fill_manual(values = rev(color_lines[6:9]))+
+  ylab("TssA Enrichment")+ xlab("")+
+  theme(panel.background = element_rect(fill = "white"),
+        axis.text.y = element_text( size = 12),
+        axis.text.x = element_text( size = 12),
+        axis.line = element_line(color = "black", size = 0.5),
+        axis.title.x = element_text(size = 12,      
+                                    face = "bold",
+                                    hjust = 0.5),
+        legend.text = element_text(size = 12))+
+  scale_y_continuous(expand = c(0, 0))+
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", size = 1)
+```
+
+
+## Figure 4H
+```{r}
+df <- read.delim("domestication_enrichment_EnhA.xls")
+
+colnames(df)[2:4] <- c("native.import","wild.native","wild.import")
+
+df2 <- melt(df)
+df2$tissue <- factor(df2$tissue, levels = unique(df2$tissue))
+
+df2$value <- round(df2$value,2)
+color_lines <- scan("color2.txt",what="chracter")
+ggplot(df2,aes(tissue,value))+
+  geom_bar(stat = 'identity',aes(fill= variable), width = 0.7, position = "dodge")+
+  scale_fill_manual(values = rev(color_lines[6:9]))+
+  ylab("EnhA Enrichment")+ xlab("")+
+  theme(panel.background = element_rect(fill = "white"),
+        axis.text.y = element_text( size = 12),
+        axis.text.x = element_text( size = 12),
+        axis.line = element_line(color = "black", size = 0.5),
+        axis.title.x = element_text(size = 12,    
+                                    face = "bold",
+                                    hjust = 0.5),
+        legend.text = element_text(size = 12))+
+  scale_y_continuous(expand = c(0, 0))+
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", size = 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

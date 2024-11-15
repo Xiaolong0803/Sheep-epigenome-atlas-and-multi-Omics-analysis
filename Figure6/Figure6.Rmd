@@ -1,0 +1,89 @@
+---
+title: "Figure 6"
+output:
+  html_document: default
+  pdf_document: default
+author: "Xiaolong Li"
+date: "2024-11-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Figure 6B
+## Tail Fat Weight
+```{r,fig.width=10, fig.height=3}
+library(ggrastr)
+library(tidyverse)
+library(data.table)
+change_data <- function(p_data){
+chr_list <- distinct(p_data,CHR)$CHR
+p_data$p_value <- -log10(p_data$P)
+p_signal_line <<- -log10(0.05/nrow(p_data))
+
+self_color_all_list <- c(
+  "#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#9372E5","#E672D5","#E57272","#E5D572","#93E572",
+  "#72E5B3","#72B3E5","#9372E5","#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#9372E5",
+  "#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#898989","#E57272","#E5D572","#93E572",
+  "#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#898989","#E57272","#E5D572","#93E572")
+self_color <<- self_color_all_list[1:length(chr_list)]
+max_value_list <- c()
+for(i in chr_list){max_value_list[i]=max(subset(p_data,CHR==i)$POS)}
+name_x_axis <- chr_list
+names(name_x_axis) <- chr_list
+value_x_axis <- c(0,cumsum(as.numeric(max_value_list[-length(max_value_list)])))
+names(value_x_axis) <- chr_list
+final_data <<- data.frame(CHR=p_data$CHR,POS=(p_data$POS+value_x_axis[as.character(p_data$CHR)]),p_value=p_data$p_value)
+final_data$CHR <<- factor(final_data$CHR,levels=chr_list)
+x_breaks <- function(demo_data,demo){
+  min_pos=min(subset(demo_data,CHR == demo)$POS)
+  max_pos=max(subset(demo_data,CHR == demo)$POS)
+  mean(c(max_pos,min_pos))}
+x_break_value <- c()
+for(i in chr_list){x_break_value[i]=x_breaks(final_data,i)}
+x_break_value <<- x_break_value
+names(x_break_value) <<- chr_list
+}
+gwas_data_tailFat <- fread("tailFat.MLM.csv.gz",data.table=F ,sep=",") %>%
+                select(c("SNP","CHROM","POS","tailFat.MLM")) %>%
+                {colnames(.) <- c("SNP","CHR","POS","P");.}
+change_data(gwas_data_tailFat)
+options(ggrastr.default.dpi=50)
+p_tailFat <- ggplot(final_data,aes(x=POS,y=p_value,colour=CHR))+
+    rasterise(geom_point(size=1))+
+    scale_x_continuous(expand = c(0.02,0.01),breaks=x_break_value,labels=names(x_break_value))+
+    geom_hline(yintercept = p_signal_line,linetype="dashed",color="red")+
+    scale_color_manual(values = self_color)+
+    theme_classic(base_size=14)+
+    theme(legend.position='none',
+        axis.text.x=element_text(color="black"), 
+        axis.text.y=element_text(color="black"))+
+    labs(x="chromosome",y="-log10(P)",title="tailFat.MLM")
+p_tailFat
+```
+
+## Figure 6B
+## The relative of tail fat weight(Carcass weight)
+```{r,fig.width=10, fig.height=3}
+gwas_data_tailFatCarcass <- fread("tailFatCarcass.MLM.csv.gz",data.table=F ,sep=",") %>%
+                select(c("SNP","CHROM","POS","tailFatCarcass.MLM")) %>%
+                {colnames(.) <- c("SNP","CHR","POS","P");.}
+change_data(gwas_data_tailFatCarcass)
+options(ggrastr.default.dpi=50)
+p_tailFatCarcass <- ggplot(final_data,aes(x=POS,y=p_value,colour=CHR))+
+    rasterise(geom_point(size=1))+
+    scale_x_continuous(expand = c(0.02,0.01),breaks=x_break_value,labels=names(x_break_value))+
+    geom_hline(yintercept = p_signal_line,linetype="dashed",color="red")+
+    scale_color_manual(values = self_color)+
+    theme_classic(base_size=14)+
+    theme(legend.position='none',
+        axis.text.x=element_text(color="black"), 
+        axis.text.y=element_text(color="black"))+
+    labs(x="chromosome",y="-log10(P)",title="tailFatCarcass.MLM")
+p_tailFatCarcass
+```
+
+
+
+

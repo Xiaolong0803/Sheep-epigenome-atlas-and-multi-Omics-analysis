@@ -1,0 +1,204 @@
+---
+title: "Figure 5"
+output:
+  html_document: default
+  pdf_document: default
+author: "Xiaolong Li"
+date: "2024-11-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Figure 5B
+```{r,fig.width=10, fig.height=3}
+library(tidyverse)
+library(data.table)
+selfFstManhattan <- function(fstFileName,namePrefix){
+input_file <- namePrefix
+c12 <- fread(fstFileName,header=T)
+c12$number <- 1:nrow(c12)
+c12$WEIGHTED_FST[c12$N_VARIANTS <=10] <- 0
+c12$WEIGHTED_FST[c12$WEIGHTED_FST <=0] <- 0
+chang12 <- subset(c12, CHROM != 27)
+xin12 <- subset(c12, CHROM == 27)
+p_chang12 <- quantile(chang12$WEIGHTED_FST,0.995)
+p_xin12 <- quantile(xin12$WEIGHTED_FST,0.995)
+bb<- select(c12,c(number,CHROM,BIN_START,WEIGHTED_FST))
+colnames(bb) <- c("SNP","CHR","BP","P")
+pmax <- max(bb$P)
+pmin <- min(bb$P)
+self_color <- c("#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#9372E5","#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#9372E5","#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#9372E5","#E672D5","#E57272","#E5D572","#93E572","#72E5B3","#72B3E5","#898989")
+max1<- max(subset(bb,CHR==1)$BP)
+max2<- max(subset(bb,CHR==2)$BP)
+max3<- max(subset(bb,CHR==3)$BP)
+max4<- max(subset(bb,CHR==4)$BP)
+max5<- max(subset(bb,CHR==5)$BP)
+max6<- max(subset(bb,CHR==6)$BP)
+max7<- max(subset(bb,CHR==7)$BP)
+max8<- max(subset(bb,CHR==8)$BP)
+max9<- max(subset(bb,CHR==9)$BP)
+max10<- max(subset(bb,CHR==10)$BP)
+max11<- max(subset(bb,CHR==11)$BP)
+max12<- max(subset(bb,CHR==12)$BP)
+max13<- max(subset(bb,CHR==13)$BP)
+max14<- max(subset(bb,CHR==14)$BP)
+max15<- max(subset(bb,CHR==15)$BP)
+max16<- max(subset(bb,CHR==16)$BP)
+max17<- max(subset(bb,CHR==17)$BP)
+max18<- max(subset(bb,CHR==18)$BP)
+max19<- max(subset(bb,CHR==19)$BP)
+max20<- max(subset(bb,CHR==20)$BP)
+max21<- max(subset(bb,CHR==21)$BP)
+max22<- max(subset(bb,CHR==22)$BP)
+max23<- max(subset(bb,CHR==23)$BP)
+max24<- max(subset(bb,CHR==24)$BP)
+max25<- max(subset(bb,CHR==25)$BP)
+max26<- max(subset(bb,CHR==26)$BP)
+max27<- max(subset(bb,CHR==27)$BP)
+colnames(bb) <- c("snp","chr","pos","value")
+rawdata <- bb
+#===============================demo-code======================
+refl <- data.frame(V1=c(1:27),
+	V2=c(max1,max2,max3,max4,max5,max6,max7,max8,max9,max10,max11,max12,max13,
+	max14,max15,max16,max17,max18,max19,max20,max21,max22,max23,max24,max25,max26,max27))
+rawdata=rawdata[rawdata$chr%in% refl$V1,]
+chrlen <-refl$V2%>%as.numeric()
+names(chrlen)<-refl$V1
+chrpos<-cumsum(chrlen[-length(chrlen)])
+chrpos<-c(0,chrpos)
+names(chrpos)<-names(chrlen)
+chrid<- as.character(rawdata$chr)
+#ylab=expression(FST)
+plot.data<- data.frame(chr=as.character(rawdata$chr),pos=rawdata$pos+chrpos[chrid],value=rawdata$value)
+plot.data$chr=factor(plot.data$chr, levels = refl$V1,ordered=T)
+xat<- sapply(tapply(plot.data$pos,plot.data$chr,function(x)mean(range(x))), unlist)
+
+line1 <- data.frame(
+	pos=c(min(subset(plot.data,chr==1)$pos),max(subset(plot.data,chr==26)$pos)),
+	value=c(p_chang12,p_chang12))
+line2 <- data.frame(
+	pos=c(min(subset(plot.data,chr==27)$pos),max(subset(plot.data,chr==27)$pos)),
+	value=c(p_xin12,p_xin12))
+##############################
+
+ylabs=c("Fst(Fat sheep VS Thin sheep)")
+titles=c("Fst(Fat sheep VS Thin sheep)")
+
+p1 <- ggplot()+geom_point(data=plot.data,aes(x=pos,y=value,colour=chr),size=2)+
+		scale_x_continuous(expand = c(0.02,0.01),breaks=xat,labels=names(xat))+
+		#scale_y_continuous(expand = c(0,0.01))+
+		theme_classic(base_size=14)+theme(axis.text=element_text(),
+		axis.text.x=element_text(angle = 0,color="black"), 
+		axis.text.y=element_text(color="black"), 
+		axis.title=element_text(),
+		plot.title=element_text(),legend.position='none')+
+		scale_color_manual(values = self_color)+
+		labs(x="chromosome",y=ylabs,title=titles)+
+		geom_line(data=line1,aes(x=pos,y=value),linetype="dashed",color="red")+
+		geom_line(data=line2,aes(x=pos,y=value),linetype="dashed",color="red")
+return(p1)
+}
+
+p_fei_shou <- selfFstManhattan("tail_fei_tail_shou.windowed.weir.fst","fei vs shou")
+p_fei_shou
+
+```
+
+## Figure 5C
+```{r,fig.width=10, fig.height=3}
+lineData_10_13 <- fread("lineData_10_13.txt")
+lineData_feishou_13 <- fread("lineData_feishou_13.txt")
+ggplot()+
+    geom_line(data=lineData_10_13,aes(POS,WEIGHTED_FST,color=GROUP),linewidth=1.5)+
+    geom_line(data=lineData_feishou_13,aes(POS,WEIGHTED_FST,color=GROUP),linewidth=1.5,color="black")+
+    theme_classic(base_size = 16)+
+    labs(x="POS(Mb)") -> p_line_13_48M_54M_plot
+p_line_13_48M_54M_plot
+```
+
+## Figure 5D
+```{r,fig.width=10, fig.height=3}
+lineData_10_15 <- fread("lineData_10_15.txt")
+lineData_feishou_15 <- fread("lineData_feishou_15.txt")
+ggplot()+
+    geom_line(data=lineData_10_15,aes(POS,WEIGHTED_FST,color=GROUP),linewidth=1.5)+
+    geom_line(data=lineData_feishou_15,aes(POS,WEIGHTED_FST,color=GROUP),linewidth=1.5,color="black")+
+    theme_classic(base_size = 16)+
+    labs(x="POS(Mb)") -> p_line_15_2M_6M_plot
+p_line_15_2M_6M_plot
+```
+
+## Figure 5E
+```{r,fig.width=10, fig.height=3}
+library(pheatmap)
+self_color <- setNames(c("#e6e6e6", "#ffffcc", "#ff994d", "#ff0000"), c(-1, 0, 1, 2))
+
+lineData_heatmap_chr13_51522935_51863333 <- fread("lineData_heatmap_chr13_51522935_51863333.txt",data.table=FALSE) %>% {rownames(.) <- .$col;.$col <- NULL;.}
+annotation_row <- fread("lineData_heatmap_chr13_51522935_51863333_annotation_row.txt",data.table=FALSE) %>% {rownames(.) <- .$col;.$col <- NULL;.}
+
+annotation_colors <- list()
+annotation_colors$group <- c("#8000FF","#FF0000","#458d38","#FFB360","#00B5EB")
+names(annotation_colors$group) <- c("FatRumpTail","LongFatTail","ShortFatTail","ShortThinTail","LongThinTail")
+
+self_labels_col <- fread("lineData_heatmap_chr13_51522935_51863333_self_labels_col.txt") %>% mutate(case_when(
+    is.na(self_labels_col) ~ "",
+    TRUE ~ as.character(self_labels_col)
+)) %>%{.[,2]} %>% pull()
+
+self_labels_row <- fread("lineData_heatmap_chr13_51522935_51863333_self_labels_row.txt") %>% mutate(case_when(
+    is.na(self_labels_row) ~ "",
+    TRUE ~ as.character(self_labels_row)
+)) %>%{.[,2]} %>% pull()
+lineData_heatmap_chr13_51522935_51863333 %>% t() %>% 
+                                            pheatmap(.,cluster_rows = F,cluster_cols = F,
+                                            color = self_color,
+                                            annotation_row = annotation_row,
+                                            annotation_colors = annotation_colors,
+                                            labels_col = self_labels_col,
+                                            labels_row = self_labels_row)
+```
+
+## Figure 5F
+```{r,fig.width=10, fig.height=3}
+lineData_heatmap_chr15_4140512_4167000 <- fread("lineData_heatmap_chr15_4140512_4167000.txt",data.table=FALSE) %>% {rownames(.) <- .$col;.$col <- NULL;.}
+annotation_row <- fread("lineData_heatmap_chr13_51522935_51863333_annotation_row.txt",data.table=FALSE) %>% {rownames(.) <- .$col;.$col <- NULL;.}
+
+self_labels_col <- fread("lineData_heatmap_chr15_4140512_4167000_self_labels_col.txt") %>% mutate(case_when(
+    is.na(self_labels_col) ~ "",
+    TRUE ~ as.character(self_labels_col)
+)) %>%{.[,2]} %>% pull()
+
+self_labels_row <- fread("lineData_heatmap_chr15_4140512_4167000_self_labels_row.txt") %>% mutate(case_when(
+    is.na(self_labels_row) ~ "",
+    TRUE ~ as.character(self_labels_row)
+)) %>%{.[,2]} %>% pull()
+lineData_heatmap_chr15_4140512_4167000 %>% t() %>% 
+                                            pheatmap(.,cluster_rows = F,cluster_cols = F,
+                                            color = self_color,
+                                            annotation_row = annotation_row,
+                                            annotation_colors = annotation_colors,
+                                            labels_col = self_labels_col,
+                                            labels_row = self_labels_row)
+```
+
+## Contact
+Xiaolong Li(lixllil@163.com)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

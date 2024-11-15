@@ -1,0 +1,128 @@
+---
+title: "Figure 2"
+author: "Jiangbo Cheng"
+date: "2024-11-14"
+output: html_document
+---
+## Figure 2D
+
+```{r}
+library(tidyverse)
+library(reshape2)
+library(reshape2)
+library(tidyverse)
+library(ggpubr)
+library(rstatix)
+library(patchwork)
+
+df <- read.delim("wgbs.xls",header = T,sep = "")
+
+df2 <- df[,c(2:ncol(df))] %>% melt()
+mycol<-c("#219EBC", "#90C9E7", "#E66F51", "#F3A261", "#4EAB90", "#E5E5E5")
+df2$variable <- factor(df2$variable, levels = rev(unique(df2$variable)))
+
+
+ggplot(df2, mapping = aes(x = variable, y = value, color = variable))+
+  geom_boxplot(bxp.errorbar = TRUE, bxp.errorbar.width = 0.25,
+               add.params = list(size=3,alpha=0.5,width=0.5),
+               outlier.shape = NA) +
+  geom_point(size = 1, alpha = 0.5,position = 'jitter',aes(color = variable))+
+  scale_fill_manual(values = rev(mycol))+
+  scale_color_manual(values = rev(mycol))+
+  theme_light()+theme(legend.title = element_blank(),
+                      legend.position = 'none',
+                      axis.title = element_text(face = 'bold',size=13),
+                      axis.text.x = element_text(face = "bold", size = 13),
+                      axis.text.y = element_text(face = "bold", size = 13))+
+  ylab("Methy. level %")+xlab("")+
+  coord_flip()
+
+```
+
+## Figure 2F
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(reshape2)
+library(ggthemes)
+
+A <- read.delim("Chromatin_state_variability.xls")
+
+mycol<-c("#219EBC", "#90C9E7", "#E66F51", "#F3A261", "#4EAB90", "#E5E5E5")
+
+ggplot(data = A) +
+  geom_smooth(aes(x = Tissues, y = TssA, color = "E1"), size = 1.5, method = "loess", se = FALSE) +
+  geom_smooth(aes(x = Tissues, y = TssW, color = "E2"), size = 1.5, method = "loess", se = FALSE) +
+  geom_smooth(aes(x = Tissues, y = EnhA, color = "E3"), size = 1.5, method = "loess", se = FALSE) +
+  geom_smooth(aes(x = Tissues, y = EnhAW, color = "E4"), size = 1.5, method = "loess", se = FALSE) +
+  geom_smooth(aes(x = Tissues, y = ATAC_Is, color = "E5"), size = 1.5, method = "loess", se = FALSE) +
+  geom_smooth(aes(x = Tissues, y = Quies, color = "E6"), size = 1.5, method = "loess", se = FALSE) +
+  scale_color_manual(values = mycol) +
+  geom_hline(yintercept = 0.75, linetype = "dashed") +
+  theme_bw() +
+  theme(
+    legend.title = element_blank(),
+    axis.title = element_text(face = 'bold', size = 13),
+    axis.text.x = element_text(face = "bold", size = 13),
+    axis.text.y = element_text(face = "bold", size = 13)
+  ) +
+  labs(x = "Number of tissues (n)", y = "Cumulative genome coverage")+
+  scale_x_continuous(breaks = seq(0, 9, by = 1))
+```
+
+
+## Figure 2G
+
+```{r}
+library(ggplot2)
+library(ggthemes)
+library(reshape2)
+df <- read.delim("TssA_conserve.xls",header = T)
+
+df <- melt(df)
+
+df$a <- factor(df$a, levels = c("Sequence_not_conserved_in_sheep","Sequence_but_not_usage_conserved_in_sheep","Usage_conserved_in_sheep"))
+
+ggplot(df,aes(x=variable,y=value,fill=a))+
+  geom_bar(stat="identity",position="fill",width = 0.6)+
+  theme_classic()+
+  scale_fill_manual(values = rev(c("#599AD5","#9DC3E6","#BDD7EE")))+
+  coord_flip()+
+  ylab("")+
+  xlab("")+
+  theme(axis.text = element_text(size = 20))+
+  scale_y_continuous (expand = c (0, 0))
+
+
+
+df <- read.delim("EnhA_conserve.xls",header = T)
+
+df <- melt(df)
+
+df$a <- factor(df$a, levels = c("Sequence_not_conserved_in_sheep","Sequence_but_not_usage_conserved_in_sheep","Usage_conserved_in_sheep"))
+
+ggplot(df,aes(x=variable,y=value,fill=a))+
+  geom_bar(stat="identity",position="fill",width = 0.6)+
+  theme_classic()+
+  scale_fill_manual(values = rev(c("#FF8585","#FBA89F","#FDD6D3")))+
+  coord_flip()+
+  ylab("")+
+  xlab("")+
+  theme(axis.text = element_text(size = 20))+
+  scale_y_continuous (expand = c (0, 0))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

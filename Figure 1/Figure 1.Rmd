@@ -1,0 +1,110 @@
+---
+title: "Figure 1"
+author: "Jiangbo Cheng"
+date: "2024-11-14"
+output: html_document
+---
+## Figure 1B
+
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(reshape2)
+library(ggthemes)
+library(ggradar)
+
+df <- read.delim("pro_enh_number.xls",header = T,sep = "\t")
+
+df1 <- t(df)
+colnames(df1) <- df1[1,]
+df1 <- df1[-1,]
+df1 <- as.data.frame(df1)  %>% rownames_to_column("group")
+df1[, 2:10] <- lapply(df1[, 2:10], as.numeric)
+
+ggradar(
+  df1, 
+  values.radar = c("0", "30000", "60000"),
+  grid.min = 0, grid.mid = 30000, grid.max = 60000,
+  # Polygons
+  group.line.width = 1, 
+  group.point.size = 3,
+  group.colours = c("#000086","#CA1717"),
+  # Background and grid lines
+  background.circle.colour = "white",
+  gridline.mid.colour = "grey",
+  legend.position = "bottom"
+)
+
+```
+
+## Figure 1C
+
+```{r}
+#Figure 1C
+library(ggplot2)
+library(ggthemes)
+library(reshape2)
+df <- read.delim("new_know.xls",header = T)
+
+df <- melt(df)
+
+
+ggplot(df,aes(x=variable,y=value,fill=a))+
+  geom_bar(stat="identity",position="fill",width = 0.5)+
+  theme_classic()+
+  scale_fill_manual(values = c("#F4B183","#8FAADC"))+
+  coord_flip()+
+  ylab("")+
+  xlab("")+
+  theme(axis.text = element_text(size = 20))+
+  scale_y_continuous (expand = c (0, 0))
+```
+
+
+## Figure 1D
+
+```{r}
+library(magrittr)
+library(dplyr)
+library(tidyverse)
+library(corrplot)
+library(ComplexHeatmap)
+
+df <- read.delim("pearson.xls")
+row.names(df) <- df$Sample
+df <- df[,-1]
+
+M <- as.matrix(df)
+
+annotation_col<-read.table("group.xls",header=T,sep="\t",row.names=1)
+annotation_col <- as.data.frame(annotation_col)
+annotation_row <- annotation_col
+
+pheatmap(M, color = colorRampPalette(c("#0871B2", "#FFFFFF","#ae2012"))(100), 
+              border_color = NA, fontsize_row = 12, fontsize_col = 12, 
+              cluster_rows = T, cluster_cols = T, 
+              show_rownames = FALSE, show_colnames = FALSE, annotation_row = annotation_row,cellwidth = 3, cellheight =3, na_col="white")
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
