@@ -10,9 +10,12 @@ Comprehensive functional genome annotation is crucial to elucidate the molecular
 
 <img src="test_up.assets/work.png" alt="work" width="80%" />
 
-# Reference
 
-**Comprehensive multi-tissue epigenome atlas in Sheep: A resource for complex traits, domestication and breeding**
+# Reference
+If you found this code useful, please cite the following paper:
+
+[Deyin Zhang,Jiangbo Cheng,Xiaolong Li, et al. Comprehensive multi-tissue epigenome atlas in sheep: A resource for complex traits, domestication, and breeding[J]](https://onlinelibrary.wiley.com/doi/10.1002/imt2.254)
+
 
 # Contact
 
